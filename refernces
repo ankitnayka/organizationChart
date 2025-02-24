@@ -1,0 +1,51 @@
+import React, { useState } from "react";
+
+const OrgChart = () => {
+  const [structure, setStructure] = useState([]);
+
+  const addSubordinate = (parentIndex) => {
+    setStructure((prev) => {
+      const newStructure = [...prev];
+      newStructure.push({ id: Date.now(), parent: parentIndex, children: [] });
+      return newStructure;
+    });
+  };
+
+  const removeSubordinate = (id) => {
+    setStructure((prev) => prev.filter((node) => node.id !== id));
+  };
+
+  const renderNode = (node) => {
+    return (
+      <div key={node.id} className="border p-3 rounded-md bg-white shadow-md">
+        <div className="flex justify-between items-center">
+          <span>Subordinate {node.id}</span>
+          <div>
+            <button onClick={() => addSubordinate(node.id)} className="text-green-600 px-2">+</button>
+            <button onClick={() => removeSubordinate(node.id)} className="text-red-600 px-2">-</button>
+          </div>
+        </div>
+        <div className="ml-5 mt-2 flex flex-wrap gap-2"> 
+          {node.children.map(renderNode)}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="p-5">
+      <h1 className="text-2xl font-bold text-center mb-5">Organizational Structure</h1>
+      <div className="flex justify-center">
+        <div className="p-3 border rounded-md bg-white shadow-md">
+          <span className="font-bold">Director</span>
+          <button onClick={() => addSubordinate(null)} className="ml-3 text-blue-600">➕ Add Subordinate</button>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-4 mt-5">
+        {structure.map(renderNode)}
+      </div>
+    </div>
+  );
+};
+
+export default OrgChart;
